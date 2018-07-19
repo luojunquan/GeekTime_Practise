@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #encoding:UTF-8
 
-from __future__ import print_function
+# from __future__ import print_function
 import sys,os
 '''
 #判断文件是否存在
@@ -139,3 +139,86 @@ logging.warn('warn message')
 logging.error('error message')
 logging.critical('critical message')
 '''
+#########################################################
+#使用 click 解析命令行参数
+'''
+1、command ：使函数 hello 成为命令行接口；
+2、option ：增加命令行选项；
+3、echo ：输出结果，使用 echo 进行输出是为了获得更好的兼容性，因为 Python2中print是一个语句， Python3中 print是一个函数
+'''
+'''
+1、default ：设置命令行参数的默认值；
+2、help ：参数说明；
+3、type ：参数类型，可以是 string、int、float 等；
+4、prompt ：当在命令行中没有输入相应的参数时，会根据 prompt 提示用户输入；
+5、nargs ：指定命令行参数接受的值的个数。
+'''
+'''
+import click
+@click.command()
+@click.option('--count',default=1,help='Number of greetings')
+@click.option('--name',prompt='Your name',help='The person to greet')
+def hello(count,name):
+    for x in range(count):
+        click.echo('Hello %s!' %name)
+
+if __name__ == '__main__':
+    hello()
+######
+'''
+#设置 prompt为True,就能够交互式地输入密码，设置 hide_input为True ，就可以隐藏我们的命令行输入，设置confirmation_prompt为True，就可以进行密码的两次验证
+'''
+@click.command()
+@click.option('--password',prompt=True,hide_input=True,confirmation_prompt=True)
+def encrypt(password):
+    click.echo('Encrypting password to %s' % password.encode('rot13'))
+
+if __name__ == '__main__':
+    encrypt()
+######
+#执行程序，系统会自动进入编辑器
+import click
+message = click.edit()
+print(message,end="")
+'''
+#####################################
+# from prompt_toolkit import prompt
+# while True:
+#     user_input = prompt('>')
+#     print(user_input)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
