@@ -186,6 +186,22 @@ print(message,end="")
 # while True:
 #     user_input = prompt('>')
 #     print(user_input)
+#####################################
+#文件的一些操作
+'''
+upper ：将字符串转换为大写；
+lower ：将字符串转换为小写
+isupper ：判断字符串是否都为大写
+islower ：判断字符串是否都为小写
+swapcase ：将字符串中的大写转换为小写、小写转换为大写；
+capitalize ：将首字母转换为大写；
+istitle ：判断字符串是不是一个标题
+'''
+yes_or_no = input('Please input yes or no:')
+if yes_or_no.lower() == "yes":
+    print("continue do something")
+else:
+    print("exit...")
 
 
 
