@@ -197,15 +197,154 @@ swapcase ：将字符串中的大写转换为小写、小写转换为大写；
 capitalize ：将首字母转换为大写；
 istitle ：判断字符串是不是一个标题
 '''
+'''
 yes_or_no = input('Please input yes or no:')
 if yes_or_no.lower() == "yes":
     print("continue do something")
 else:
     print("exit...")
+'''
+#####################################
+### 判断类方法
+'''
+1、s.isalpha ：如果字符串只包含字母，并且非空，否则返回 True则返回 False;
+2、s.isalnum ：如果字符串值包含字母和数字，并且非空，否则返回True ，否则返回False;
+3、s.isspace ：如果字符串值包含 制表符、换行符，并且非空，否则返回True，否则返回False·
+4、s.isdecimal ：如果字符串只包含数字字符，并且非空，否则返回True 则返回False
+'''
+import os
+# print([item for item in os.listdir('.') if item.endswith('.txt')])
+# print([item for item in os.listdir('.') if item.startswith('Geek')])
+# #查找mysql日志所占用磁盘大小
+# mysql_logs = [item for item in os.listdir('/var/log/mysql/') if item.startswith('error.log')]
+# sum_size = sum(os.path.getsize(os.path.join('/var/log/mysql/',item)) for item in mysql_logs)
+# #多少M
+# print(sum_size / 1024 / 1024)
+##print 函数本身可以通过 sep 参数指定分隔符：
+# In [10]: print('root','/root','/bin/bash',sep=':')
+# root:/root:/bin/bash
+##################################################
+from collections import Counter
+##统计网站的访问热门资源
+'''
+c = Counter()
+with open('access.log') as f:
+    for line in f:
+        c[line.split()[6]] += 1
+
+print("Popular resources : {0}" .format(c.most_common(10)))
+'''
+## 计算网站返回值的比率
+'''
+d = {}
+with open('access.log') as f:
+    for line in f:
+        key = line.split()[8]
+        d.setdefault(key,0)
+        d[key] += 1
+
+sum_requests = 0
+error_requests = 0
+
+for key,val in d.items():
+    if int(key) >= 400:
+        error_requests += val
+    sum_requests += val
+
+print('error rate:{0:.2f}%'.format(error_requests * 100.0 / sum_requests))
+'''
+############################################
+'''
+##format的使用
+from collections import namedtuple
+Person = namedtuple('Person','name age sex')
+xm = Person('Xiaoming',20,'male')
+print("{p.name} {p.age} {p.sex} old this year".format(p=xm))
+#########################
+#字符集编码
+Unicode 是表现形式， UTF总是存储形式
+name = '罗俊强111111'
+with open('data.txt','w',encoding='utf-8') as f:
+    f.write(name)
+############################
+正则表达式
+推荐使用变异表达式re_obj = re.compile(pattern)
+import re
+def main():
+    pattern = "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"
+    re_obj = re.compile(pattern)
+    with open('popd.log') as f:
+        for line in f:
+            data = re_obj.findall(line)
+            if len(data) != 0:
+                print(data)
+
+if __name__ == '__main__':
+    main()
+##############3
+data= dict(bob=13000000001,lily=130000000002, robin=130000000003)
+index = 0
+for key,value in data.items():
+    index += 1
+    print (index,key,value,sep= ",")
+
+#####
+#
+# with open('data.txt','w') as f:
+#     print(1,2,'hello world',sep=",",file=f)
 
 
+with open('popd.log') as inf,open('out.txt','w') as outf:
+    for line in inf:
+        outf.write(" ".join([word.capitalize() for word in line.split()]))
+        outf.write("\n")
+'''
+############################################
+import os
+'''
+print("current directory:",os.getcwd())
+path = os.path.abspath(__file__)
+print("full path of current file:",path)
+print("parent directory of current file:",os.path.abspath(os.path.join(os.path.dirname(path),os.path.pardir)))
+'''
+'''
+1、getatime ：获取文件的访问时间
+2、getmtime ：获取文件的修改时间
+3、getctime ：获取文件的创建时间
+4、getsize  ：获取文件的大小
+'''
+'''
+1、exists ：参数path所指向的路径是否存在
+2、sfile ：参数path所指向的路 存在，并且是一个文件；
+3、isdir ：参数path所指向的路径存在，并且是一个文件夹；
+4、islink：参数path所指向的路径存在，并且是一个链接；
+5、ismount：参数path所指向的路径存在，并且是一个挂载点
+'''
+####用来统计每条命令的出现次数，然后找出出现次数最多的 10 条命令
+'''
+import os
+from collections import Counter
+c = Counter()
+with open(os.path.expanduser('~root/.bash_history')) as f:
+    for line in f:
+        cmd = line.strip().split()
+        if cmd:
+            c[cmd[0]] += 1
 
-
+print(c.most_common(10))
+'''
+#walk 返回一个三元组（ dirpath, dimames, filenames ）。其中， dirpath 保存的是当前目录， dimames 是当前目录下的子目录列表， filenames 是当前目录下的文件列表
+import os
+import fnmatch
+files = ['*pak']
+matches = []
+except_file = '/opt/electronic-wechat-linux-x64/'
+path = "/opt/"
+for root,dirnames,filenames in os.walk(os.path.expanduser(path)):
+    for extensions  in files:
+        for filename in fnmatch.filter(filenames,extensions):
+            matches.append(os.path.join(root,filename))
+print(matches)
 
 
 
