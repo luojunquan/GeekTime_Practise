@@ -334,24 +334,46 @@ with open(os.path.expanduser('~root/.bash_history')) as f:
 print(c.most_common(10))
 '''
 #walk 返回一个三元组（ dirpath, dimames, filenames ）。其中， dirpath 保存的是当前目录， dimames 是当前目录下的子目录列表， filenames 是当前目录下的文件列表
+#查找/opt目录下的所有pak的文件
+'''
 import os
 import fnmatch
 files = ['*pak']
 matches = []
-except_file = '/opt/electronic-wechat-linux-x64/'
 path = "/opt/"
 for root,dirnames,filenames in os.walk(os.path.expanduser(path)):
     for extensions  in files:
         for filename in fnmatch.filter(filenames,extensions):
             matches.append(os.path.join(root,filename))
 print(matches)
+'''
 
-
-
-
-
-
-
+import os
+import fnmatch
+def is_file_match(filename,patterns):
+     for pattern in patterns:
+         if fnmatch.fnmatch(filename,pattern):
+             return True
+     return False
+#find_specific_files 函数，该函数接受三个参数，分别是查找的根路径，匹配的文件模式列表和需要排除的目录列表。
+#walk 返回一个三元组（ dirpath,dimames,filenames ）.其中,dirpath 保存的是
+#当前目录,dimames 是当前目录下的子目录列表,filenames 是当前目录下的文件列表
+def find_specific_files(root,patterns=['*'],exclude_dirs=[]):
+    for root,dirnames,filenames in os.walk(root):
+        for filename in filenames:
+            if is_file_match(filename,patterns):
+                yield os.path.join(root,filename)
+        for d in exclude_dirs:
+            if d in dirnames:
+                dirnames.remove(d)
+#查到目录下的所有文件
+# for item in find_specific_files('.'):
+#     print(item)
+#查找目录下最大的十个文件
+files = {name:os.path.getsize(name) for name in find_specific_files('.',exclude_dirs=['.git'])}
+result = sorted(files.items(),key = lambda d:d[1],reverse = True)[:10]
+for i,t in enumerate(result,1):
+    print(i,t[0],t[1])
 
 
 
