@@ -2,7 +2,12 @@
 #encoding:UTF-8
 
 # from __future__ import print_function
+import hashlib
 import sys,os
+
+import datetime
+import tarfile
+
 '''
 #判断文件是否存在
 def main():
@@ -347,7 +352,8 @@ for root,dirnames,filenames in os.walk(os.path.expanduser(path)):
             matches.append(os.path.join(root,filename))
 print(matches)
 '''
-
+####################################################
+'''
 import os
 import fnmatch
 def is_file_match(filename,patterns):
@@ -374,21 +380,135 @@ files = {name:os.path.getsize(name) for name in find_specific_files('.',exclude_
 result = sorted(files.items(),key = lambda d:d[1],reverse = True)[:10]
 for i,t in enumerate(result,1):
     print(i,t[0],t[1])
+'''
+#####################################
+##找到目录下的重复文件
+'''
+import os
+import fnmatch
+import hashlib
+CHUNK_SIZE = 8192
+def is_file_match(filename,patterns):
+     for pattern in patterns:
+         if fnmatch.fnmatch(filename,pattern):
+             return True
+     return False
+#find_specific_files 函数，该函数接受三个参数，分别是查找的根路径，匹配的文件模式列表和需要排除的目录列表。
+#walk 返回一个三元组（ dirpath,dimames,filenames ）.其中,dirpath 保存的是
+#当前目录,dimames 是当前目录下的子目录列表,filenames 是当前目录下的文件列表
+def find_specific_files(root,patterns=['*'],exclude_dirs=[]):
+    for root,dirnames,filenames in os.walk(root):
+        for filename in filenames:
+            if is_file_match(filename,patterns):
+                yield os.path.join(root,filename)
+        for d in exclude_dirs:
+            if d in dirnames:
+                dirnames.remove(d)
+
+def get_chunk(filename):
+    with open(filename) as f:
+        while True:
+            chunk = f.read(CHUNK_SIZE)
+            if not chunk:
+                break
+            else:
+                yield chunk
+
+def get_file_checksum(filename):
+    h = hashlib.md5()
+    for chunk in get_chunk(filename):
+        h.update(chunk)
+    return h.hexdigest()
+
+def main():
+    sys.argv.append("")
+    directory = sys.argv[1]
+    if not os.path.isdir(directory):
+        raise SystemExit("{0} is not a directory".format(directory))
+
+    record = {}
+    for item in find_specific_files(directory):
+        checksum = get_file_checksum(item)
+        if checksum in record:
+            print('find duplicate file: {0} vs {1}'.format(record[checksum], item))
+        else:
+            record[checksum] = item
+
+if __name__ == '__main__':
+    main()
+'''
+####################################################################
+#使用 Python 管理压缩包
+##创建一个gz的tar包
+'''
+import tarfile
+with tarfile.open('tafile_add.tar',mode='w:gz') as out:
+    out.add('name.txt')
+'''
+'''
+1、getnames ：获取 tar 包中的文件列表；
+2、extract ：提取单个文件；
+3、extractall ：提取所有文件
+'''
+##读取tar包，并且提取里面的所有文件
+'''
+import tarfile
+with tarfile.open('tafile_add.tar',mode='r:gz') as out:
+    for member_info in out.getmembers():
+        out.extractall()
+'''
+#####备份指定的文件到压缩包中
+##备份当前目录下的所有.py结尾的文件
+'''
+import os
+import fnmatch
+import hashlib
+import datetime
+def is_file_match(filename,patterns):
+     for pattern in patterns:
+         if fnmatch.fnmatch(filename,pattern):
+             return True
+     return False
+#find_specific_files 函数，该函数接受三个参数，分别是查找的根路径，匹配的文件模式列表和需要排除的目录列表。
+#walk 返回一个三元组（ dirpath,dimames,filenames ）.其中,dirpath 保存的是
+#当前目录,dimames 是当前目录下的子目录列表,filenames 是当前目录下的文件列表
+def find_specific_files(root,patterns=['*'],exclude_dirs=[]):
+    for root,dirnames,filenames in os.walk(root):
+        for filename in filenames:
+            if is_file_match(filename,patterns):
+                yield os.path.join(root,filename)
+        for d in exclude_dirs:
+            if d in dirnames:
+                dirnames.remove(d)
+
+def main():
+    patterns = ['*.py']
+    now = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+    filename = "all_py_{0}.tar.gz".format(now)
+    with tarfile.open(filename,'w:gz') as f:
+        for item in find_specific_files('.',patterns):
+            f.add(item)
 
 
+if __name__ == '__main__':
+    main()
+'''
+####zip压缩包
+# import zipfile
+# newzip = zipfile.ZipFile('new.zip','w')
+# newzip.write('name.txt')
+# newzip.close()
 
-
-
-
-
-
-
-
-
-
-
-
-
+'''
+zip file 模块提供的命令行接口包含以下几个选项：
+-l ：显示 zip格式压缩包中的文件列表
+-c ：创建zip 格式压缩包
+-e ：提取zip 格式压缩包
+-t ：验证文件是一个有效的 zip 格式压缩包
+ python3 -m zipfile -l new.zip
+'''
+###########################################3
+#Python 中执行外部命令
 
 
 
