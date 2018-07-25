@@ -509,11 +509,47 @@ zip file 模块提供的命令行接口包含以下几个选项：
 '''
 ###########################################3
 #Python 中执行外部命令
-
-
-
-
-
+'''
+import subprocess
+output = subprocess.check_output(['df','-h']).decode('utf-8')
+lines = output.split('\n')
+#用with方式将输出写到文件中
+with open('df.txt','w') as f:
+    for line in lines[0:-1]:
+        f.writelines(line.split()[0] + '    '+ line.split()[1] + '    '+ line.split()[3] + '\n')
+#用print方式将输出写入到文件中
+# f = open('df.txt', 'w')
+# for line in lines[0:-1]:
+#     print(line.split()[0], line.split()[1], line.split()[3],file=f)
+# f.close()
+'''
+'''
+##call check call 函数直接将命令的输出结果输出到命令行终端
+try:
+    output = subprocess.check_output(['df','h'],stderr=subprocess.STDOUT)
+except subprocess.CalledProcessError as e:
+    output = e.output
+    print(output.decode('utf-8'))
+    code = e.returncode
+    print(code)
+'''
+###################
+#subprocess 模块的 Popen类
+##函数对 Popen 执行 shell 命令进行封装，封装以后，只要将需要执行的 shell 命令传递给该函数即可
+# 当命令执行成功时，将返回命令的退出状态码和标准输出，当命令执行失败时，将返回退出状态码和错误输出
+'''
+import subprocess
+def execute_cmd(cmd):
+	p = subprocess.Popen(cmd,
+						shell=True,
+						stdin=subprocess.PIPE,
+						stdout=subprocess.PIPE,
+						stderr=subprocess.PIPE)
+	stdout, stderr = p.communicate()
+	if p.returncode != 0:
+		return p.returncode, stderr
+	return p.returncode, stdout
+'''
 
 
 
