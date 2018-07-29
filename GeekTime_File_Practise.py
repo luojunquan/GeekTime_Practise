@@ -21,3 +21,6 @@ file3.close()
 file4 = open('name.txt')
 for file in file4.readlines():
     print(file)
+
+
+

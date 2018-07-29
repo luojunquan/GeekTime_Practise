@@ -18,3 +18,6 @@ print(arr3)
 ## pandas库
 from pandas import Series,DataFrame
 import pandas as pd
+
+
+obj = Series([4,5,6,-7])
